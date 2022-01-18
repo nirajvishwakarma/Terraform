@@ -18,7 +18,37 @@ resource "aws_instance" "example" {
    key_name = "aws-key"
    tags = {
      Name = "MyInstance"
- }
+   }
+   vpc_security_group_ids = [aws_security_group.main.id]
+}
+
+resource "aws_security_group" "main" {
+  egress = [
+    {
+      cidr_blocks      = [ "0.0.0.0/0", ]
+      description      = ""
+      from_port        = 0
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "-1"
+      security_groups  = []
+      self             = false
+      to_port          = 0
+    }
+  ]
+ ingress                = [
+   {
+     cidr_blocks      = [ "0.0.0.0/0", ]
+     description      = ""
+     from_port        = 22
+     ipv6_cidr_blocks = []
+     prefix_list_ids  = []
+     protocol         = "tcp"
+     security_groups  = []
+     self             = false
+     to_port          = 22
+  }
+  ]
 }
 
 resource "aws_ebs_volume" "example" {
@@ -34,4 +64,5 @@ resource "aws_volume_attachment" "ebs_att" {
    volume_id   = aws_ebs_volume.example.id
    instance_id = aws_instance.example.id
 }
+
 
